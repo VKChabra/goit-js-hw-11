@@ -37,7 +37,7 @@ const makeGalleryItemsMarkup = data => {
     const arrayOfResults = data.data.hits;
     checkIfFound(data);
     const markupOfResults = arrayOfResults.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-        return `<div class="gallery__item">
+        return `<li class="gallery__item">
         <a class="gallery__link" href="${largeImageURL}">
             <img
             class="gallery__image"
@@ -46,16 +46,16 @@ const makeGalleryItemsMarkup = data => {
             />
         </a>
         <ul class="gallery__item-data">
-            <li class='gallery__received-data>Likes
-            <br>${likes}</li>
-            <li class='gallery__received-data>Views
-            <br>${views}</li>
-            <li class='gallery__received-data>Comments
-            <br>${comments}</li>
-            <li class='gallery__received-data>Downloads
-            <br>${downloads}</li>
+            <li class='gallery__received-data>Likes:
+            ${likes}</li>
+            <li class='gallery__received-data>Views:
+            ${views}</li>
+            <li class='gallery__received-data>Comments:
+            ${comments}</li>
+            <li class='gallery__received-data>Downloads:
+            ${downloads}</li>
         </ul>
-        </div>`;
+        </li>`;
     }).join('');
     return insertImages(markupOfResults);
 };
