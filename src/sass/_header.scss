@@ -2,11 +2,27 @@ body {
     font-family: 'Tiro Devanagari Hindi', serif;
 }
 
+.credits-block {
+    position: absolute;
+    left: 10px;
+    top: 2px;
+    display: flex;
+    align-items: center;
+}
+
+.credits {
+    display: inherit;
+    margin-left: 5px;
+    padding: 5px;
+    border: 1px solid chocolate;
+    border-radius: 15px;
+}
+
 .search-form {
     display: flex;
     justify-content: center;
 
-    background-color: #28c948;
+    background: linear-gradient(90deg, rgba(227,228,1,1) 0%, rgba(9,182,39,0.7371323529411764) 53%, rgba(0,155,255,1) 100%);
     width: 100%;
     padding-top: 7px;
     padding-bottom: 7px;
@@ -16,6 +32,9 @@ body {
     display: flex;
     width: 25%;
 
+    border-color: chocolate;
+    border-radius: 10px;
+
     padding-left: 10px;
     padding-bottom: 3px;
     padding-top: 3px;
@@ -24,6 +43,10 @@ body {
 .search-form__search-btn {
     display: flex;
     align-items: flex-end;
+    cursor: pointer;
+
+    border-color: chocolate;
+    border-radius: 10px;
 
     margin-left: 10px;
 }

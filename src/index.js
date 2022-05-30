@@ -1,9 +1,9 @@
 import './sass/main.scss';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import './js/fetchImages'
+import fetchImages from './js/fetchImages'
+import { infScroll } from './js/infiniteScroll';
 import {Notify} from 'notiflix';
-import fetchImages from "./js/fetchImages";
 
 const refs = {
     form: document.querySelector('.search-form'),
@@ -13,6 +13,7 @@ const refs = {
 const { headerFormInput, gallery, form } = refs;
 
 const trimmedInputValue = () => headerFormInput.value.trim();
+let pageNumber = 1;
 
 const searchImages = async (e) => {
     e.preventDefault();
@@ -20,6 +21,7 @@ const searchImages = async (e) => {
         return Notify.info('Type anything first please, will ya?');
     } else {
         try {
+            clearGalleryMarkup();
             const fetchImg = await fetchImages(trimmedInputValue());
             return makeGalleryItemsMarkup(fetchImg);
         } catch (error) {
@@ -34,11 +36,10 @@ form.addEventListener('submit', searchImages)
 
 const makeGalleryItemsMarkup = data => {
     const arrayOfResults = data.data.hits;
-    // checkIfFound(data)
     if (arrayOfResults.length === 0) {
         return Notify.failure("Sorry, there are no images matching your search query. Please try again.")
     } else {
-        Notify.success(`Hooray! We found ${data.data.total} images.`)
+        Notify.success(`Hooray! We found ${data.data.totalHits} images.`)
         const markupOfResults = arrayOfResults.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
         return `<li class="gallery__item">
         <a class="gallery__link" href="${largeImageURL}">
@@ -69,12 +70,14 @@ const makeGalleryItemsMarkup = data => {
     }
 };
 
-// function checkIfFound(e) {
-//     if (e.data.hits.length === 0) {
-//         return Notify.failure("Sorry, there are no images matching your search query. Please try again.")
-//     }
-// }
+function clearGalleryMarkup() {
+    gallery.innerHTML = '';
+};
 
 function insertImages(images) {
     gallery.insertAdjacentHTML('beforeend', images);
-}
+};
+
+new SimpleLightbox('.gallery__item .gallery__link', {
+    close: true,
+});
