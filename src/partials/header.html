@@ -1,9 +1,14 @@
 <header>
-  <form class="top-form">
-      <input class="top-form__input" type="text"></input>
-      <button class="top-form__search-btn" type="submit">
-          <text class="top-form__text">Find</text>
-          <svg class="top-form__search-icon" width="16" height="14">
+  <form class="search-form">
+      <input class="search-form__input" 
+        type="text" 
+        name="searchQuery"
+        autocomplete="off"
+        placeholder="Search images...">
+      </input>
+      <button class="search-form__search-btn" type="submit">
+          Search
+          <svg class="search-form__search-icon" width="16" height="14">
               <use href="./images/svgs_collection.svg#icon-search"></use>
           </svg>
       </button>
