@@ -1,0 +1,34 @@
+body {
+    font-family: 'Tiro Devanagari Hindi', serif;
+}
+
+.top-form {
+    display: flex;
+    justify-content: center;
+
+    background-color: #28c948;
+    width: 100%;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.top-form__input {
+    display: flex;
+    width: 25%;
+
+    padding-left: 10px;
+    padding-bottom: 3px;
+    padding-top: 3px;
+}
+
+.top-form__search-btn {
+    display: flex;
+    align-items: flex-end;
+
+    margin-left: 10px;
+}
+
+.top-form__search-icon {
+    align-self: center;
+    margin-left: 6px;
+}
