@@ -1,18 +1,12 @@
 import './sass/main.scss';
-import fetchImages from './js/fetchImages';
+import ApiService from './js/fetchImages';
 import {Notify} from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-// import infScroll from './js/infiniteScroll';
 
-const additionalInfoNotify = () => {
-    Notify.info('Infinite scroll will (probably) be added in future updates, thanks for understanding');
-setTimeout(() => {
-    Notify.warning('And I have no idea why SimpleLightBox is not working, I have tried my best')
-}, 3500);
-}
+const apiService = new ApiService();
 
-additionalInfoNotify();
+Notify.warning('No idea why SimpleLightBox is not working, I have tried my best');
 
 const refs = {
     form: document.querySelector('.search-form'),
@@ -24,41 +18,32 @@ const { headerFormInput, gallery, form, loadMoreBtn } = refs;
 
 // console.dir(document.querySelector('.search-form__search-btn').outerText);
 
-const trimmedInputValue = () => {
-    searchQuery = headerFormInput.value.trim();
-    return headerFormInput.value.trim();
-};
-
-let searchQuery = '';
-let pageNumber = 1;
+const trimmedInputValue = () => headerFormInput.value.trim();
 
 const searchImages = async (e) => {
     e.preventDefault();
     if (trimmedInputValue() === '') {
         return Notify.info('Type anything first please, will ya?');
     } else {
-        try {
-            clearGalleryMarkup();
-            const fetchImg = await fetchImages(trimmedInputValue());
-            console.log(searchQuery);
-            makeGalleryItems(fetchImg);
-            loadMoreBtn.classList.remove('is-hidden');
-        } catch (error) {
-            () => {
-                return console.log(error);
-            }
+        clearGalleryMarkup();
+        apiService.query = trimmedInputValue();
+        apiService.resetPage();
+        const fetchImg = await apiService.fetchImages();
+        makeAndRenderGalleryItems(fetchImg);
         }
-    }
 }
 
 form.addEventListener('submit', searchImages)
 
-const makeGalleryItems = data => {
+const makeAndRenderGalleryItems = data => {
     const arrayOfResults = data.data.hits;
+    const dataTotalHits = data.data.totalHits;
     if (arrayOfResults.length === 0) {
+        hideLoadMoreBtn();
         return Notify.failure("Sorry, there are no images matching your search query. Please try again.")
     } else {
-        Notify.success(`Hooray! We found ${data.data.totalHits} images.`)
+        showLoadMoreBtn();
+        Notify.success(`Hooray! We found ${dataTotalHits} images.`)
         const markupOfResults = arrayOfResults.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
         return `<li class="gallery__item">
         <a class="gallery__link" href="${largeImageURL}">
@@ -89,8 +74,7 @@ const makeGalleryItems = data => {
     }
 };
 
-const linkLightbox = '.gallery .gallery__link';
-new SimpleLightbox(linkLightbox, {
+new SimpleLightbox('.gallery .gallery__link', {
     close: true,
     captionsData: 'alt',
 });
@@ -105,14 +89,16 @@ function insertImages(images) {
 
 const renderLoadButton = async (e) => {
     e.preventDefault();
-        try {
-            const fetchImg = await fetchImages(trimmedInputValue());
-            makeGalleryItems(fetchImg);
-        } catch (error) {
-            () => {
-                return console.log(error);
-            }
-        }
+    const fetchImg = await apiService.fetchImages();
+    makeAndRenderGalleryItems(fetchImg);
 }
 
 loadMoreBtn.addEventListener('click', renderLoadButton);
+
+function showLoadMoreBtn() {
+    loadMoreBtn.classList.remove('is-hidden');
+}
+
+function hideLoadMoreBtn() {
+    loadMoreBtn.classList.add('is-hidden');
+}
