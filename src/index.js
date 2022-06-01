@@ -1,18 +1,35 @@
 import './sass/main.scss';
+import fetchImages from './js/fetchImages';
+import {Notify} from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import fetchImages from './js/fetchImages'
-import { infScroll } from './js/infiniteScroll';
-import {Notify} from 'notiflix';
+// import infScroll from './js/infiniteScroll';
+
+const additionalInfoNotify = () => {
+    Notify.info('Infinite scroll will (probably) be added in future updates, thanks for understanding');
+setTimeout(() => {
+    Notify.warning('And I have no idea why SimpleLightBox is not working, I have tried my best')
+}, 3500);
+}
+
+additionalInfoNotify();
 
 const refs = {
     form: document.querySelector('.search-form'),
     headerFormInput: document.querySelector('.search-form__input'),
-    gallery: document.querySelector('.gallery')
+    gallery: document.querySelector('.gallery'),
+    loadMoreBtn: document.querySelector('.load-more'),
 }
-const { headerFormInput, gallery, form } = refs;
+const { headerFormInput, gallery, form, loadMoreBtn } = refs;
 
-const trimmedInputValue = () => headerFormInput.value.trim();
+// console.dir(document.querySelector('.search-form__search-btn').outerText);
+
+const trimmedInputValue = () => {
+    searchQuery = headerFormInput.value.trim();
+    return headerFormInput.value.trim();
+};
+
+let searchQuery = '';
 let pageNumber = 1;
 
 const searchImages = async (e) => {
@@ -23,7 +40,9 @@ const searchImages = async (e) => {
         try {
             clearGalleryMarkup();
             const fetchImg = await fetchImages(trimmedInputValue());
-            return makeGalleryItemsMarkup(fetchImg);
+            console.log(searchQuery);
+            makeGalleryItems(fetchImg);
+            loadMoreBtn.classList.remove('is-hidden');
         } catch (error) {
             () => {
                 return console.log(error);
@@ -34,7 +53,7 @@ const searchImages = async (e) => {
 
 form.addEventListener('submit', searchImages)
 
-const makeGalleryItemsMarkup = data => {
+const makeGalleryItems = data => {
     const arrayOfResults = data.data.hits;
     if (arrayOfResults.length === 0) {
         return Notify.failure("Sorry, there are no images matching your search query. Please try again.")
@@ -51,17 +70,17 @@ const makeGalleryItemsMarkup = data => {
             />
         </a>
         <div class="gallery-info">
-            <p class="gallery__received-data">
-            <b>Likes</b> ${likes}
+            <p class="gallery-info__received-data">
+            <b>Likes</b>${likes}
             </p>
-            <p class="gallery__received-data">
-            <b>Views</b> ${views}
+            <p class="gallery-info__received-data">
+            <b>Views</b>${views}
             </p>
-            <p class="gallery__received-data">
-            <b>Comments</b> ${comments}
+            <p class="gallery-info__received-data">
+            <b>Comments</b>${comments}
             </p>
-            <p class="gallery__received-data">
-            <b>Downloads</b> ${downloads}
+            <p class="gallery-info__received-data">
+            <b>Downloads</b>${downloads}
             </p>
         </div>
         </li>`;
@@ -69,6 +88,12 @@ const makeGalleryItemsMarkup = data => {
         return insertImages(markupOfResults);
     }
 };
+
+const linkLightbox = '.gallery .gallery__link';
+new SimpleLightbox(linkLightbox, {
+    close: true,
+    captionsData: 'alt',
+});
 
 function clearGalleryMarkup() {
     gallery.innerHTML = '';
@@ -78,6 +103,16 @@ function insertImages(images) {
     gallery.insertAdjacentHTML('beforeend', images);
 };
 
-new SimpleLightbox('.gallery__item .gallery__link', {
-    close: true,
-});
+const renderLoadButton = async (e) => {
+    e.preventDefault();
+        try {
+            const fetchImg = await fetchImages(trimmedInputValue());
+            makeGalleryItems(fetchImg);
+        } catch (error) {
+            () => {
+                return console.log(error);
+            }
+        }
+}
+
+loadMoreBtn.addEventListener('click', renderLoadButton);

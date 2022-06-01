@@ -8,6 +8,10 @@ body {
     top: 2px;
     display: flex;
     align-items: center;
+
+    @media screen and (max-width:550px) {
+        top: 38px;
+    }
 }
 
 .credits {
@@ -16,6 +20,16 @@ body {
     padding: 5px;
     border: 1px solid chocolate;
     border-radius: 15px;
+
+    @media screen and (max-width:900px) {
+        // padding: 3px;
+    }
+}
+
+.credits-block__text {
+    @media screen and (max-width:900px) {
+        display: none;
+    }
 }
 
 .search-form {
@@ -54,4 +68,14 @@ body {
 .search-form__search-icon {
     align-self: center;
     margin-left: 6px;
+
+    @media screen and (max-width:700px) {
+        margin: 0;
+    }
+}
+
+.search-form__text {
+    @media screen and (max-width:700px) {
+        display: none;
+    }
 }

@@ -18,8 +18,9 @@
     justify-content: space-evenly;
 }
 
-.gallery__received-data {
+.gallery-info__received-data {
     display: grid;
+    justify-items: center;
 }
 
 .gallery__image {
